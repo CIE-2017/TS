@@ -46,16 +46,18 @@ int main()
 	if ((new_socket = accept(server_fd, (struct sockaddr *)&address, 
 					(socklen_t*)&addrlen))<0) 
 	{ 
-		perror("accept"); 
+		perror("accept");          
 		exit(EXIT_FAILURE); 
 	} 
 
 	//send,receive
+	while(new_socket>0){
 	valread = read( new_socket , buffer, sizeof(buffer));
 	printf("Character count: %d\n",valread); 
 	printf("Message: %s\n",buffer ); 
 	send(new_socket , word , strlen(word) , 0 ); 
 	printf("message sent to client\n"); 
+			}
 	}
 	return 0; 
 } 
