@@ -20,10 +20,12 @@ public class tcp_client : MonoBehaviour
     {
         byte[] fileStream = new byte[2];
         fileStream[0] = 0x00C9;
-        byte[] eiei = Encoding.ASCII.GetBytes("someString");
-        byte[] haha = Encoding.ASCII.GetBytes("asdfasdf");
-        SendData(eiei);
-        SendData(haha);
+        float Horizontal = Input.GetAxis("Horizontal");
+        float Vertical = Input.GetAxis("Vertical");
+        byte[] moveHorizontal = Encoding.ASCII.GetBytes("Horizon: " + Horizontal.ToString());
+        byte[] moveVertical = Encoding.ASCII.GetBytes("Vertical: " + Horizontal.ToString());
+        SendData(moveHorizontal);
+        SendData(moveVertical);
     }
 
     void OnApplicationQuit()
@@ -66,7 +68,7 @@ public class tcp_client : MonoBehaviour
 
         //Start receiving again
         _clientSocket.BeginReceive(_recieveBuffer, 0, _recieveBuffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), null);
-        
+
     }
 
     private void SendData(byte[] data)
