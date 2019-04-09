@@ -6,39 +6,39 @@ using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-public class net_test : MonoBehaviour
+public class SSL_client : MonoBehaviour
 {
+    static string server = "192.168.153.130";
+    static TcpClient client = new TcpClient(server, 4433);
+    SslStream sslStream = new SslStream(client.GetStream(), false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
     // Start is called before the first frame update
     void Start()
-    {
-        string server = "192.168.153.130";
-        TcpClient client = new TcpClient(server, 4433);
-
-        using (SslStream sslStream = new SslStream(client.GetStream(), false,
-            new RemoteCertificateValidationCallback(ValidateServerCertificate), null))
-        {
-            sslStream.AuthenticateAsClient(server);
-            // This is where you read and send data
-            byte[] messsage = Encoding.UTF8.GetBytes("Hello from the client.");
-            sslStream.Write(messsage);
-            string answer = ReadMessage(sslStream);
-            Debug.Log("Server says: " + answer);
-        }
-        client.Close();
+    {        
+        sslStream.AuthenticateAsClient(server);
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+        byte[] messsage = Encoding.UTF8.GetBytes("Hello from the client.");
+        sslStream.Write(messsage);
+        string answer = ReadMessage(sslStream);
+        Debug.Log("Server says: " + answer);
+    }   
+
+    void OnApplicationQuit()
+    {
+        client.Close();
     }
 
+    //Validate the server ceretificate
     public static bool ValidateServerCertificate(object sender, X509Certificate certificate,
     X509Chain chain, SslPolicyErrors sslPolicyErrors)
     {
         return true;
     }
 
+    //read the message sent from sever
     string ReadMessage(SslStream sslStream)
     {
         byte[] buffer = new byte[2048];

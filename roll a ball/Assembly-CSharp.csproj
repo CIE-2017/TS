@@ -61,14 +61,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\_Completed-Game\Scripts\CameraController.cs" />
-    <Compile Include="Assets\_Completed-Game\Scripts\Demo.cs" />
-    <Compile Include="Assets\_Completed-Game\Scripts\net_test.cs" />
-    <Compile Include="Assets\_Completed-Game\Scripts\new_ssl.cs" />
+    <Compile Include="Assets\_Completed-Game\Scripts\Demo_SSL.cs" />
     <Compile Include="Assets\_Completed-Game\Scripts\PlayerController.cs" />
     <Compile Include="Assets\_Completed-Game\Scripts\Rotator.cs" />
-    <Compile Include="Assets\_Completed-Game\Scripts\SSL_TCPclient.cs" />
+    <Compile Include="Assets\_Completed-Game\Scripts\SSL_client.cs" />
     <Compile Include="Assets\_Completed-Game\Scripts\tcp_client.cs" />
-    <Compile Include="Assets\_Completed-Game\Scripts\TlsTest.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>D:/Data/GItclone/TS/roll a ball/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
