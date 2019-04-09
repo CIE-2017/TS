@@ -1,3 +1,0 @@
-1.) openssl genrsa -des3 -out private.pem 2048 //create private key
-2.) openssl rsa -in private.pem -outform PEM -pubout -out public.pem //create public key
-3.) use "less public.pem" to check public key 

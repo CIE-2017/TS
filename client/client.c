@@ -10,7 +10,7 @@
 #include <openssl/rand.h>
 #include <openssl/rsa.h>
 #include <openssl/pem.h>
-#define PORT 5000 
+#define PORT 4333 
 char * IP_server = "127.0.0.1";
 int main(void) 
 { 

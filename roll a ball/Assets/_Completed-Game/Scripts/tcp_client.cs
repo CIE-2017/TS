@@ -38,7 +38,7 @@ public class tcp_client : MonoBehaviour
         try
         {
             IPAddress server = IPAddress.Parse("192.168.153.130");
-            _clientSocket.Connect(new IPEndPoint(server, 5000));
+            _clientSocket.Connect(new IPEndPoint(server, 4433));
         }
         catch (SocketException ex)
         {
