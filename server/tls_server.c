@@ -25,6 +25,7 @@ int main(int argc, char **argv)
 
     configure_context(ctx);//configure the ctx
     sock = create_socket(4433);//create a normal socket
+    fprintf(stderr,"Simple echo TLS server\n");
     /* Handle connections */
     while(1) {
         struct sockaddr_in addr;
@@ -50,7 +51,7 @@ int main(int argc, char **argv)
             {   
  	        SSL_read(ssl,buff,2048);
 	        fprintf(stderr,"read:%s\n",buff);
-            SSL_write(ssl, reply, strlen(reply));
+            SSL_write(ssl, buff, strlen(buff));
             }
         }
         printf("done");

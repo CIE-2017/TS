@@ -8,7 +8,20 @@ using System.Text;
 
 public class SSL_client : MonoBehaviour
 {
-    static string server = "192.168.153.130";
+    /*
+    struct Test{
+        public int First;
+        public int Second;
+
+        public Test(int first, int second)
+        {
+            this.First = first;
+            this.Second = second;
+        }
+    }*/
+
+    public string answer;
+    static string server = "192.168.153.131";
     static TcpClient client = new TcpClient(server, 4433);
     SslStream sslStream = new SslStream(client.GetStream(), false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
     // Start is called before the first frame update
@@ -20,10 +33,14 @@ public class SSL_client : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        byte[] messsage = Encoding.UTF8.GetBytes("Hello from the client.");
-        sslStream.Write(messsage);
-        string answer = ReadMessage(sslStream);
+        //Test slot1 = new Test(123, 123 );
+        float Horizontal = Input.GetAxis("Horizontal");
+        float Vertical = Input.GetAxis("Vertical");
+        byte[] moveHorizontal = Encoding.ASCII.GetBytes(Horizontal.ToString());
+        sslStream.WriteAsync(moveHorizontal,0, moveHorizontal.Length);
+        answer = ReadMessage(sslStream);
         Debug.Log("Server says: " + answer);
+        SetBuffer();
     }   
 
     void OnApplicationQuit()
