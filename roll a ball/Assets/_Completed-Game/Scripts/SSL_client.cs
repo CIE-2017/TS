@@ -6,22 +6,19 @@ using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
+
+public class Account
+{
+    public string Horizontal;
+    public string Vertical;
+}
+
 public class SSL_client : MonoBehaviour
 {
-    /*
-    struct Test{
-        public int First;
-        public int Second;
 
-        public Test(int first, int second)
-        {
-            this.First = first;
-            this.Second = second;
-        }
-    }*/
-
+    public Account json_obj;
     public string answer;
-    static string server = "192.168.153.131";
+    static string server = "192.168.153.132";
     static TcpClient client = new TcpClient(server, 4433);
     SslStream sslStream = new SslStream(client.GetStream(), false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
     // Start is called before the first frame update
@@ -37,10 +34,17 @@ public class SSL_client : MonoBehaviour
         float Horizontal = Input.GetAxis("Horizontal");
         float Vertical = Input.GetAxis("Vertical");
         byte[] moveHorizontal = Encoding.ASCII.GetBytes(Horizontal.ToString());
-        sslStream.WriteAsync(moveHorizontal,0, moveHorizontal.Length);
+        Account user = new Account();
+        user.Horizontal = Horizontal.ToString();
+        user.Vertical = Vertical.ToString();
+
+        string result = JsonUtility.ToJson(user);
+
+        byte[] send = Encoding.ASCII.GetBytes(result);
+        sslStream.WriteAsync(send,0, send.Length);
         answer = ReadMessage(sslStream);
-        Debug.Log("Server says: " + answer);
-        SetBuffer();
+        json_obj = JsonUtility.FromJson<Account>(answer);
+        //Debug.Log("Server says: " + answer);
     }   
 
     void OnApplicationQuit()
