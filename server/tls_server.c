@@ -47,7 +47,7 @@ int main(int argc, char **argv)
             ERR_print_errors_fp(stderr);
         }
         else {
-            while(SSL_accept(ssl)>0)
+            if(SSL_accept(ssl)>0)
             {   
  	        SSL_read(ssl,buff,2048);
 	        fprintf(stderr,"read:%s\n",buff);
