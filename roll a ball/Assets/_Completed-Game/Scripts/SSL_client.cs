@@ -9,13 +9,13 @@ using System.Text;
 
 public class Account
 {
+    public string Id;
     public string Horizontal;
     public string Vertical;
 }
 
 public class SSL_client : MonoBehaviour
 {
-
     public Account json_obj;
     public string answer;
     static string server = "192.168.153.132";
@@ -35,9 +35,10 @@ public class SSL_client : MonoBehaviour
         float Vertical = Input.GetAxis("Vertical");
         byte[] moveHorizontal = Encoding.ASCII.GetBytes(Horizontal.ToString());
         Account user = new Account();
+
         user.Horizontal = Horizontal.ToString();
         user.Vertical = Vertical.ToString();
-
+        user.Id = "1";
         string result = JsonUtility.ToJson(user);
 
         byte[] send = Encoding.ASCII.GetBytes(result);
