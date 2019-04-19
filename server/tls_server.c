@@ -5,6 +5,7 @@
 #include <arpa/inet.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+#include <pthread.h>
 
 //list of functions
 int create_socket(int port);
@@ -12,60 +13,85 @@ void init_openssl();
 void cleanup_openssl();
 SSL_CTX *create_context();
 void configure_context(SSL_CTX *ctx);
+void *myThread(void* input);
+//////////////////////////
+
+
+struct args {
+    SSL* ssl;
+    int client;
+};
 
 
 //main//
 int main(int argc, char **argv)
 {
+    //declare variable
     int sock;
     SSL_CTX *ctx;
+    SSL *ssl;
+    struct sockaddr_in addr;
+    uint len = sizeof(addr);
+    ////////////////////////////
 
+
+    ///initiation
     init_openssl(); //initiate configuration
     ctx = create_context(); //create ctx
-
     configure_context(ctx);//configure the ctx
     sock = create_socket(4433);//create a normal socket
+    ///////////////////
+    
+    /* Loop Handle connections */
     fprintf(stderr,"Simple echo TLS server\n");
-    /* Handle connections */
     while(1) {
-        struct sockaddr_in addr;
-        uint len = sizeof(addr);
-        SSL *ssl;
-        const char reply[] = "testeieizaza\n";
-	char *buff;
-	buff = calloc(2048,sizeof(char));
-        int client = accept(sock, (struct sockaddr*)&addr, &len);
-        if (client < 0) {
+	//establish connection with client with ssl
+        int client = accept(sock, (struct sockaddr*)&addr, &len); //block function
+        if (client <= 0) {
             perror("Unable to accept");
             exit(EXIT_FAILURE);
         }
-
         ssl = SSL_new(ctx);
-        SSL_set_fd(ssl, client);//sets the file descriptor fd as the input/output facility for the TLS/SSL (encrypted) side of ssl. fd 
+	SSL_set_fd(ssl, client);//sets the file descriptor fd as the input/output facility for the TLS/SSL (encrypted) side of ssl. fd 	
+	SSL_accept(ssl);
+	///////////////////
 
-        if (SSL_accept(ssl) <= 0) {
-            ERR_print_errors_fp(stderr);
-        }
-        else {
-            while(SSL_accept(ssl)>0)
-            {   
- 	        SSL_read(ssl,buff,2048);
-	        fprintf(stderr,"read:%s\n",buff);
-            	SSL_write(ssl, buff, strlen(buff));
-	        memset(buff,0,2048);
-            }
-        }
-        printf("done");
-        SSL_free(ssl);
-        close(client);
+	// Start a new thread
+	struct args *argument = (struct args *)malloc(sizeof(struct args));
+	argument->ssl = ssl;
+	argument->client = client;
+
+    	pthread_t thread_id;
+    	pthread_create(&thread_id, NULL, myThread, (void *)Allen);
+	/////////////////////
     }
-    printf("laew");
     close(sock);
     SSL_CTX_free(ctx);
     cleanup_openssl();
 }
 
+
 //------functions-------//
+
+void *myThread(void * input) 
+{  		
+		char *buff;
+		buff = calloc(2048,sizeof(char));
+		SSL* ssl = ((struct args*)input)->ssl;
+	        int client = ((struct args*)input)->client;	
+		
+		while(1){
+				if(SSL_read(ssl,buff,2048)>0){
+	        		fprintf(stderr,"read:%s\n",buff);
+            			SSL_write(ssl, buff, strlen(buff)); 
+	        		memset(buff,0,2048); 
+				}
+
+		}
+        	SSL_free(ssl);
+		close(client);
+} 
+
 int create_socket(int port)
 {
     int s;

@@ -40,35 +40,14 @@ int main(int arc, char **argv)
         return -2;
     }
     
-    const char *request = "jkl;asdfjkklsadf\n";
-    
-    if (BIO_puts(bio, request) <= 0) {
-        BIO_free_all(bio);
-        printf("errored; unable to write.\n");
-        ERR_print_errors_fp(stderr);
-        return -1;
+    const char *request = "353535353535\n";
+    while(1){
+    	BIO_puts(bio, request);
+    	char tmpbuf[1024+1];
+    	int len = BIO_read(bio, tmpbuf, 1024);
+        tmpbuf[len] = 0;
+        printf("%s", tmpbuf);
     }
-    
-    char tmpbuf[1024+1];
-    
-    for (;;) {
-        int len = BIO_read(bio, tmpbuf, 1024);
-        if (len == 0) {
-            break;
-        }
-        else if (len < 0) {
-            if (!BIO_should_retry(bio)) {
-                printf("errored; read failed.\n");
-                ERR_print_errors_fp(stderr);
-                break;
-            }
-        }
-        else {
-            tmpbuf[len] = 0;
-            printf("%s", tmpbuf);
-        }
-    }
-    
     BIO_free_all(bio);
     
     return 0;

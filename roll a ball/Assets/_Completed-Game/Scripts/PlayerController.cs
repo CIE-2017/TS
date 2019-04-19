@@ -63,9 +63,10 @@ public class PlayerController : MonoBehaviour {
 		{
 			// Make the other game object (the pick up) inactive, to make it disappear
 			other.gameObject.SetActive (false);
-
-			// Add one to the score variable 'count'
-			count = count + 1;
+            other.gameObject.transform.position += new Vector3(2F,0,0);
+            other.gameObject.SetActive(true);
+            // Add one to the score variable 'count'
+            count = count + 1;
            
             // Run the 'SetCountText()' function (see below)
             SetCountText ();
