@@ -84,8 +84,9 @@ void *myThread(void * input)
 				if(SSL_read(ssl,buff,2048)>0){
 	        		fprintf(stderr,"read:%s\n",buff);
             			SSL_write(ssl, buff, strlen(buff)); 
-	        		memset(buff,0,2048); 
-				}
+	        		memset(buff,'\0',2048); 
+				}else{
+
 
 		}
         	SSL_free(ssl);

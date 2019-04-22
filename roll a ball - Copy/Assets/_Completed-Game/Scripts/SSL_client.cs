@@ -5,6 +5,7 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 
 
 public class Account
@@ -17,14 +18,33 @@ public class Account
 public class SSL_client : MonoBehaviour
 {
     public Account json_obj;
+    private Thread _t1;
     public string answer;
-    static string server = "192.168.153.132";
+    static string server = "192.168.1.135";
     static TcpClient client = new TcpClient(server, 4433);
     SslStream sslStream = new SslStream(client.GetStream(), false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
     // Start is called before the first frame update
+
+    private void _func1()
+    {
+        try
+        {
+            sslStream.ReadTimeout = 500;
+
+            answer = ReadMessage(sslStream);
+            json_obj = JsonUtility.FromJson<Account>(answer);
+        }
+        catch
+        {
+            json_obj = null;
+        }
+    
+    }
+
     void Start()
     {        
         sslStream.AuthenticateAsClient(server);
+        _t1 = new Thread(_func1);
     }
 
     // Update is called once per frame
@@ -33,19 +53,32 @@ public class SSL_client : MonoBehaviour
         //Test slot1 = new Test(123, 123 );
         float Horizontal = Input.GetAxis("Horizontal");
         float Vertical = Input.GetAxis("Vertical");
-        byte[] moveHorizontal = Encoding.ASCII.GetBytes(Horizontal.ToString());
         Account user = new Account();
+        if (Horizontal != 0.0f || Vertical != 0.0f)
+        {
+            user.Horizontal = Horizontal.ToString();
+            user.Vertical = Vertical.ToString();
+            user.Id = "2";
+            string result = JsonUtility.ToJson(user);
+            byte[] send = Encoding.ASCII.GetBytes(result);
+            try
+            {
+                sslStream.Write(send, 0, send.Length);
+            }
+            catch {
+                Debug.Log("lol");
+            }
+        }
+        /*
+        if (answer != null) {
+            json_obj = JsonUtility.FromJson<Account>(answer);
+        }
+        else
+        {
+            json_obj = JsonUtility.FromJson<Account>("{}");
+        }*/
 
-        user.Horizontal = Horizontal.ToString();
-        user.Vertical = Vertical.ToString();
-        user.Id = "2";
-        string result = JsonUtility.ToJson(user);
-
-        byte[] send = Encoding.ASCII.GetBytes(result);
-        sslStream.WriteAsync(send,0, send.Length);
-        answer = ReadMessage(sslStream);
-        json_obj = JsonUtility.FromJson<Account>(answer);
-        //Debug.Log("Server says: " + answer);
+        //Debug.Log(answer);
     }   
 
     void OnApplicationQuit()
@@ -71,7 +104,7 @@ public class SSL_client : MonoBehaviour
         char[] chars = new char[decoder.GetCharCount(buffer, 0, bytes)];
         decoder.GetChars(buffer, 0, bytes, chars, 0);
         messageData.Append(chars);
-        Debug.Log(messageData.ToString());
+        //Debug.Log(messageData.ToString());
         return messageData.ToString();
     }
 }

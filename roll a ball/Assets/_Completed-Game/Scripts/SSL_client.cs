@@ -42,7 +42,7 @@ public class SSL_client : MonoBehaviour
         string result = JsonUtility.ToJson(user);
 
         byte[] send = Encoding.ASCII.GetBytes(result);
-        sslStream.WriteAsync(send,0, send.Length);
+        sslStream.WriteAsync(send, 0, send.Length);
         answer = ReadMessage(sslStream);
         json_obj = JsonUtility.FromJson<Account>(answer);
         //Debug.Log("Server says: " + answer);
