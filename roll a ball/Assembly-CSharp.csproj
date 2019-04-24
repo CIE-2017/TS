@@ -65,7 +65,6 @@
     <Compile Include="Assets\_Completed-Game\Scripts\PlayerController.cs" />
     <Compile Include="Assets\_Completed-Game\Scripts\Rotator.cs" />
     <Compile Include="Assets\_Completed-Game\Scripts\SSL_client.cs" />
-    <Compile Include="Assets\_Completed-Game\Scripts\tcp_client.cs" />
     <Compile Include="Assets\_Completed-Game\Scripts\Test.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>D:/Data/GItclone/TS/roll a ball/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>

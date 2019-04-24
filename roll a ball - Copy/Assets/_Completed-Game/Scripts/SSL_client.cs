@@ -20,31 +20,36 @@ public class SSL_client : MonoBehaviour
     public Account json_obj;
     private Thread _t1;
     public string answer;
-    static string server = "192.168.1.135";
+    static string server = "172.30.154.38";
     static TcpClient client = new TcpClient(server, 4433);
     SslStream sslStream = new SslStream(client.GetStream(), false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
     // Start is called before the first frame update
 
-    private void _func1()
+     void _func1()
     {
-        try
+        while (true)
         {
-            sslStream.ReadTimeout = 500;
+            try
+            {
+                // sslStream.ReadTimeout = 500;
 
-            answer = ReadMessage(sslStream);
-            json_obj = JsonUtility.FromJson<Account>(answer);
+                answer = ReadMessage(sslStream);
+                json_obj = JsonUtility.FromJson<Account>(answer);
+                //Debug.Log(json_obj.Id);
+            }
+            catch
+            {
+                //Debug.Log("dfs")
+                json_obj = null;
+            }
         }
-        catch
-        {
-            json_obj = null;
-        }
-    
     }
 
     void Start()
     {        
         sslStream.AuthenticateAsClient(server);
         _t1 = new Thread(_func1);
+        _t1.Start();
     }
 
     // Update is called once per frame

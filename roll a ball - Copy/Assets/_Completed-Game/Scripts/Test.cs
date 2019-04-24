@@ -12,7 +12,7 @@ public class Test : MonoBehaviour
     {
         eiei = GameObject.Find("/Opponent/Sphere");
         rb = eiei.GetComponent<Rigidbody>();
-        eiei.SetActive(false);
+        //eiei.SetActive(false);
     }
     void FixedUpdate()
     {
@@ -21,19 +21,19 @@ public class Test : MonoBehaviour
         Account json = clientScript.json_obj;
         if (json != null)
         {
-
-            // Set some local float variables equal to the value of our Horizontal and Vertical Inputs
-            float moveHorizontal = float.Parse(json.Horizontal);
+            if (json.Id == "1")
+            {
+                // Set some local float variables equal to the value of our Horizontal and Vertical Inputs
+                float moveHorizontal = float.Parse(json.Horizontal);
             float moveVertical = float.Parse(json.Vertical);
 
             // Create a Vector3 variable, and assign X and Z to feature our horizontal and vertical float variables above
             Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-            Debug.Log(movement);
+            //Debug.Log(movement);
             // Add a physical force to our Player rigidbody using our 'movement' Vector3 above, 
             // multiplying it by 'speed' - our public player speed that appears in the inspector
-            if (json.Id == "1")
-            {
-                eiei.SetActive(true);
+
+                //eiei.SetActive(true);
                 rb.AddForce(movement * speed);
             }
         }
