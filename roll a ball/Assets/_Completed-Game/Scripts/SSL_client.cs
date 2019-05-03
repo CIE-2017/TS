@@ -20,13 +20,15 @@ public class SSL_client : MonoBehaviour
     public Account json_obj;
     private Thread _t1;
     public string answer;
-    static string server = "172.30.154.38";
+    static string server = "35.240.210.226";
+    public string id;
     static TcpClient client = new TcpClient(server, 4433);
     SslStream sslStream = new SslStream(client.GetStream(), false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
     // Start is called before the first frame update
 
      void _func1()
     {
+        id = ReadMessage(sslStream);
         while (true)
         {
             try
@@ -63,7 +65,7 @@ public class SSL_client : MonoBehaviour
         {
             user.Horizontal = Horizontal.ToString();
             user.Vertical = Vertical.ToString();
-            user.Id = "1";
+            user.Id = id;
             string result = JsonUtility.ToJson(user);
             byte[] send = Encoding.ASCII.GetBytes(result);
             try

@@ -38,9 +38,10 @@ public class PlayerController : MonoBehaviour {
         GameObject client = GameObject.Find("Main Camera");
         SSL_client clientScript = client.GetComponent<SSL_client>();
         Account json = clientScript.json_obj;
+        string myId = clientScript.id;
         if (json != null)
         {
-            if (json.Id == "1")
+            if (json.Id == myId)
             {
                 // Set some local float variables equal to the value of our Horizontal and Vertical Inputs
                 float moveHorizontal = float.Parse(json.Horizontal);

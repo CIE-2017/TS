@@ -18,10 +18,11 @@ public class Test : MonoBehaviour
     {
         GameObject client = GameObject.Find("Main Camera");
         SSL_client clientScript = client.GetComponent<SSL_client>();
+        string myId = clientScript.id;
         Account json = clientScript.json_obj;
         if (json != null)
         {
-            if (json.Id == "2")
+            if (json.Id != myId)
             {
                 // Set some local float variables equal to the value of our Horizontal and Vertical Inputs
                 float moveHorizontal = float.Parse(json.Horizontal);

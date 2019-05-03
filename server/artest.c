@@ -94,9 +94,14 @@ void *myThread(void * input)
 char *buff; 
 buff = calloc(2048,sizeof(char)); 
 SSL* ssl = ((struct args*)input)->ssl; 
-int client = ((struct args*)input)->client;	
+int client = ((struct args*)input)->client;
+int upper = 100;
+int lower = 1;
+char result[50]; 
+int num = (rand() % (upper - lower + 1)) + lower; 
+sprintf(result, "%d", num); 
+SSL_write(ssl,result,strlen(result));	//send Id
 while(1){ 
-
 if(SSL_read(ssl,buff,2048)>0){ 
 fprintf(stderr,"read:%s\n",buff); 
 //SSL_write(ssl, buff, strlen(buff)); 
