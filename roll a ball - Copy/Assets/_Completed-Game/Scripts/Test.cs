@@ -16,7 +16,7 @@ public class Test : MonoBehaviour
     }
     void FixedUpdate()
     {
-        GameObject client = GameObject.Find("Main Camera");
+        GameObject client = GameObject.Find("SSL");
         SSL_client clientScript = client.GetComponent<SSL_client>();
         string myId = clientScript.id;
         Account json = clientScript.json_obj;

@@ -15,8 +15,10 @@ public class PlayerController : MonoBehaviour {
 	// Create private references to the rigidbody component on the player, and the count of pick up objects picked up so far
 	private Rigidbody rb;
 	private int count;
-   
+    void Awake()
+    {
 
+    }
     // At the start of the game..
     void Start ()
 	{
@@ -30,15 +32,20 @@ public class PlayerController : MonoBehaviour {
 
 		// Set the text property of our Win Text UI to an empty string, making the 'You Win' (game over message) blank
 		winText.text = "";
-	}
+        GameObject client = GameObject.Find("SSL");
+        SSL_client clientScript = client.GetComponent<SSL_client>();
+        transform.position = clientScript.position;
+        //Debug.Log(clientScript.position);
+    }
 
 	// Each physics step..
 	void FixedUpdate ()
 	{
-        GameObject client = GameObject.Find("Main Camera");
+        GameObject client = GameObject.Find("SSL");
         SSL_client clientScript = client.GetComponent<SSL_client>();
         Account json = clientScript.json_obj;
         string myId = clientScript.id;
+        //transform.position = clientScript.position;
         if (json != null)
         {
             if (json.Id == myId)
