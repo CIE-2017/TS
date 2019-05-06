@@ -23,7 +23,7 @@ public class SSL_client : MonoBehaviour
     public Account json_obj;
     private Thread _t1;
     public string answer;
-    static string server = "172.30.154.39";
+    static string server = "35.240.157.83";
     
     //for google cloud
     //static string server = "35.240.210.226"; 
