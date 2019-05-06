@@ -10,6 +10,7 @@ using System.Threading;
 
 public class Account
 {
+    public string RoomId;
     public string Id;
     public string Horizontal;
     public string Vertical;
@@ -27,6 +28,7 @@ public class SSL_client : MonoBehaviour
     //for google cloud
     //static string server = "35.240.210.226"; 
     public string id;
+    public string room_id;
     public Vector3 position;
     static TcpClient client = new TcpClient(server, 4433);
     SslStream sslStream = new SslStream(client.GetStream(), false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
@@ -38,7 +40,7 @@ public class SSL_client : MonoBehaviour
 
      void _func1()
     {
-        id = ReadMessage(sslStream);
+        room_id = ReadMessage(sslStream);
         id = PlayerStats.Id.ToString();
         float pos_x = float.Parse(ReadMessage(sslStream));
         float pos_z = float.Parse(ReadMessage(sslStream));
@@ -86,6 +88,7 @@ public class SSL_client : MonoBehaviour
         Account user = new Account();
         if (Horizontal != 0.0f || Vertical != 0.0f)
         {
+            user.RoomId = room_id;
             user.Horizontal = Horizontal.ToString();
             user.Vertical = Vertical.ToString();
             user.Id = id;

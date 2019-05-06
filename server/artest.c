@@ -23,6 +23,7 @@ struct args
     SSL *ssl;
     int no;
     int client;
+    int room_id;
 };
 
 SSL *ssl_array[4];
@@ -48,6 +49,9 @@ int main(int argc, char **argv)
 
     /* Loop Handle connections */
     fprintf(stderr, "Simple echo TLS server\n");
+    int client_number  =0;
+    int room_id =0;
+
     while (1)
     {
         //establish connection with client with ssl
@@ -61,13 +65,13 @@ int main(int argc, char **argv)
         SSL_set_fd(ssl, client); //sets the file descriptor fd as the input/output facility for the TLS/SSL (encrypted) side of ssl. fd
         SSL_accept(ssl);
         ///////////////////
+	client_number++;
 
         // Start a new thread
         struct args *argument = (struct args *)malloc(sizeof(struct args));
         argument->ssl = ssl;
         argument->client = client;
-        //argument->no = i;
-    
+    	argument->room_id = room_id;
         int i = 0; 
         int exit = 1;
         while (exit&&i<5)
@@ -85,6 +89,9 @@ int main(int argc, char **argv)
         }    
         pthread_t thread_id;
         pthread_create(&thread_id, NULL, myThread, (void *)argument);
+	if(client_number%2==0){
+		room_id++;	
+	}
         /////////////////////
         i++;
     }
@@ -116,6 +123,7 @@ void *myThread(void *input)
     SSL *ssl = ((struct args *)input)->ssl;
     int client = ((struct args *)input)->client;
     int no = ((struct args *)input)->no;
+    int room_id = ((struct args *)input)->room_id;
 
     int upper = 100;
     int lower = 1;
@@ -123,11 +131,11 @@ void *myThread(void *input)
     char pos_x[10];
     char pos_z[10];
     srand(time(0));
-    int num = (rand() % (upper - lower + 1)) + lower;
+    //int num = (rand() % (upper - lower + 1)) + lower;
     int p_x = (rand() % 9);
     int p_z = (rand() % 9);
 
-    sprintf(user_id, "%d", num);
+    sprintf(user_id, "%d", room_id);
     sprintf(pos_x, "%d", p_x);
     sprintf(pos_z, "%d", p_z);
 
