@@ -7,6 +7,7 @@
 #include <openssl/err.h>
 #include <pthread.h>
 #include <time.h>
+
 //list of functions
 int create_socket(int port);
 void init_openssl();
@@ -14,10 +15,8 @@ void cleanup_openssl();
 SSL_CTX *create_context();
 void configure_context(SSL_CTX *ctx);
 void *myThread(void *input);
-
+void broadcast(SSL **array, char *buff);
 //////////////////////////
-
-pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
 
 struct args
 {
@@ -27,18 +26,7 @@ struct args
 };
 
 SSL *ssl_array[4];
-
-void print_list(SSL **array, char *buff)
-{
-    pthread_mutex_lock(&mutex1);
-    for(int i=0;i<5;i++)
-    {
-	if(array[i] != NULL){
-        SSL_write(array[i], buff, strlen(buff));
-	}
-    }
-    pthread_mutex_unlock(&mutex1);
-}
+pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
 
 //main//
 int main(int argc, char **argv)
@@ -60,7 +48,6 @@ int main(int argc, char **argv)
 
     /* Loop Handle connections */
     fprintf(stderr, "Simple echo TLS server\n");
-    int i = 0;
     while (1)
     {
         //establish connection with client with ssl
@@ -79,8 +66,23 @@ int main(int argc, char **argv)
         struct args *argument = (struct args *)malloc(sizeof(struct args));
         argument->ssl = ssl;
         argument->client = client;
-	argument->no = i;
-        ssl_array[i] = ssl;
+        //argument->no = i;
+    
+        int i = 0; 
+        int exit = 1;
+        while (exit&&i<5)
+        {
+            if (ssl_array[i] == NULL)
+            {
+                ssl_array[i] = ssl;
+                argument->no = i;
+                exit = 0;
+            }
+            i++;
+        }
+        for(int i=0;i<5;i++){
+            fprintf(stderr, "client:%ld\n", ssl_array[i]);
+        }    
         pthread_t thread_id;
         pthread_create(&thread_id, NULL, myThread, (void *)argument);
         /////////////////////
@@ -92,6 +94,19 @@ int main(int argc, char **argv)
 }
 
 //------functions-------//
+
+void broadcast(SSL **array, char *buff)
+{
+    pthread_mutex_lock(&mutex1);
+    for (int i = 0; i < 5; i++)
+    {
+        if (array[i] != NULL)
+        {
+            SSL_write(array[i], buff, strlen(buff));
+        }
+    }
+    pthread_mutex_unlock(&mutex1);
+}
 
 void *myThread(void *input)
 {
@@ -117,21 +132,23 @@ void *myThread(void *input)
     sprintf(pos_z, "%d", p_z);
 
     SSL_write(ssl, user_id, strlen(user_id)); //send Id
-    SSL_write(ssl, pos_x, strlen(pos_x)); //send pos X
-    SSL_write(ssl, pos_z, strlen(pos_z)); //send pos Z
+    SSL_write(ssl, pos_x, strlen(pos_x));     //send pos X
+    SSL_write(ssl, pos_z, strlen(pos_z));     //send pos Z
 
     while (1)
     {
         if (SSL_read(ssl, buff, 2048) > 0)
         {
             fprintf(stderr, "read:%s\n", buff);
-	    if(strcmp(buff,"exit") == 0){
-		ssl_array[no] = NULL;	
-		}
+            if (strcmp(buff, "exit") == 0)
+            {
+                ssl_array[no] = NULL;
+            }
             //SSL_write(ssl, buff, strlen(buff));
-	    else{
-            print_list(ssl_array, buff);
-		}
+            else
+            {
+                broadcast(ssl_array, buff);
+            }
             memset(buff, 0, 2048);
         }
     }

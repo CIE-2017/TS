@@ -62,7 +62,9 @@
   <ItemGroup>
     <Compile Include="Assets\_Completed-Game\Scripts\CameraController.cs" />
     <Compile Include="Assets\_Completed-Game\Scripts\Demo_SSL.cs" />
+    <Compile Include="Assets\_Completed-Game\Scripts\NewScene.cs" />
     <Compile Include="Assets\_Completed-Game\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\_Completed-Game\Scripts\PlayerStats.cs" />
     <Compile Include="Assets\_Completed-Game\Scripts\Rotator.cs" />
     <Compile Include="Assets\_Completed-Game\Scripts\SSL_client.cs" />
     <Compile Include="Assets\_Completed-Game\Scripts\Test.cs" />

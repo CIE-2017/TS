@@ -39,6 +39,7 @@ public class SSL_client : MonoBehaviour
      void _func1()
     {
         id = ReadMessage(sslStream);
+        id = PlayerStats.Id.ToString();
         float pos_x = float.Parse(ReadMessage(sslStream));
         float pos_z = float.Parse(ReadMessage(sslStream));
         position_x = pos_x.ToString();
@@ -142,7 +143,7 @@ public class SSL_client : MonoBehaviour
         StringBuilder messageData = new StringBuilder();
         int bytes = -1;
         bytes = sslStream.Read(buffer, 0, buffer.Length);
-        Decoder decoder = Encoding.UTF8.GetDecoder();
+        Decoder decoder = Encoding.ASCII.GetDecoder();
         char[] chars = new char[decoder.GetCharCount(buffer, 0, bytes)];
         decoder.GetChars(buffer, 0, bytes, chars, 0);
         messageData.Append(chars);
