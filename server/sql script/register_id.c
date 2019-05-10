@@ -1,12 +1,36 @@
 #include <my_global.h>
 #include <mysql.h>
-
 #include <stdio.h>
 #include <string.h>
 #include <openssl/sha.h>
 #include <time.h>
 #include <stdlib.h>
 #include <openssl/rand.h>
+#include <openssl/bio.h>
+#include <openssl/evp.h>
+#include <openssl/buffer.h>
+
+//Encodes Base64
+int Base64Encode(const unsigned char* buffer, size_t length, char** b64text) { //Encodes a binary safe base 64 string
+	BIO *bio, *b64;
+	BUF_MEM *bufferPtr;
+
+	b64 = BIO_new(BIO_f_base64());
+	bio = BIO_new(BIO_s_mem());
+	bio = BIO_push(b64, bio);
+
+	BIO_set_flags(bio, BIO_FLAGS_BASE64_NO_NL); //Ignore newlines - write everything in one line
+	BIO_write(bio, buffer, length);
+	BIO_flush(bio);
+	BIO_get_mem_ptr(bio, &bufferPtr);
+	BIO_set_close(bio, BIO_NOCLOSE);
+	BIO_free_all(bio);
+
+	*b64text=(*bufferPtr).data;
+
+	return (0); //success
+}
+
 void finish_with_error(MYSQL *con)
 {
   fprintf(stderr, "%s\n", mysql_error(con));
@@ -60,7 +84,7 @@ int main(int argc, char **argv)
 	salt[17]='\0';
 	printf("Id:%s\n",id);
 	printf("Pass:%s\n",password);
-	printf("Salt: ");
+	printf("Salt:%s\n",salt);
 	//print_cryp(salt,sizeof(salt));
 	unsigned char pass[20];
 	strcpy(pass, password);
@@ -70,12 +94,17 @@ int main(int argc, char **argv)
 	SHA256_Update(&sha256, salt, strlen(salt));
 	SHA256_Update(&sha256, pass, strlen(pass));
 	SHA256_Final(hash, &sha256);
-	printf("Hash: ");
+	//printf("Hash: ");
 	//print_cryp(hash,SHA256_DIGEST_LENGTH);
-	char salt_h[33]={0};
-	string2hexString(salt,salt_h,16);
-	char hash_h[65]={0};
-	string2hexString(hash,hash_h,SHA256_DIGEST_LENGTH);
+	//char sallt_h[33];	
+	char *salt_h;
+	//string2hexString(salt,salt_h,16);
+    	Base64Encode(salt, strlen(salt), &salt_h);
+	//char hash_h[65]={0};
+	char *hash_h;	
+	Base64Encode(hash, SHA256_DIGEST_LENGTH, &hash_h);
+
+//string2hexString(hash,hash_h,SHA256_DIGEST_LENGTH);
 	
 	
 char buffer[200];

@@ -65,8 +65,7 @@ int main(int argc, char **argv)
         SSL_set_fd(ssl, client); //sets the file descriptor fd as the input/output facility for the TLS/SSL (encrypted) side of ssl. fd
         SSL_accept(ssl);
         ///////////////////
-	client_number++;
-
+    	client_number++;
         // Start a new thread
         struct args *argument = (struct args *)malloc(sizeof(struct args));
         argument->ssl = ssl;
@@ -101,7 +100,6 @@ int main(int argc, char **argv)
 }
 
 //------functions-------//
-
 void broadcast(SSL **array, char *buff)
 {
     pthread_mutex_lock(&mutex1);
@@ -119,7 +117,6 @@ void *myThread(void *input)
 {
     char *buff;
     buff = calloc(2048, sizeof(char));
-
     SSL *ssl = ((struct args *)input)->ssl;
     int client = ((struct args *)input)->client;
     int no = ((struct args *)input)->no;
